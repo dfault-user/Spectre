@@ -1,6 +1,8 @@
 local Players = game:GetService("Players")
 local ServerScriptService = game:GetService("ServerScriptService")
+local MarketplaceService = game:GetService("MarketplaceService")
 local Spectre = ServerScriptService["Spectre"]
+local MessageService = require(Spectre["Subsystems"]["MessageService"])
 local Modules = {}
 local SpectreAudio = {}
 
@@ -15,6 +17,12 @@ if not workspace:FindFirstChild("SpectreAudio") then
 	sObj.Name = "SpectreAudio"
 	sObj.Parent = workspace
 	SpectreAudio["Speaker"] = sObj
+
+	sObj:GetPropertyChangedSignal("SoundId"):Connect(function()
+		sObj:Stop()
+		wait(.1)
+		sObj:Play()
+	end)
 end
 
 function SpectreAudio:GetObject()

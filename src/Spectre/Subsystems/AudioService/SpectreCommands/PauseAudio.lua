@@ -14,6 +14,7 @@ return {
 	Command = "apause",
 
 	Exec = function(plr,args)
-		SpectreAudio:Pause()
+		local sObj = SpectreAudio:GetObject()
+		sObj.Playing = not sObj.Playing
 	end,
 }
