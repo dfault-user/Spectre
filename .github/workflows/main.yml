@@ -4,9 +4,18 @@ on:
     - master
 
 jobs:
-  pull-rojo:
-    name: Pull Rojo from Aftman
+  build-spectre:
+    name: Build Spectre
     runs-on: windows-latest
     steps:
       - uses: ok-nick/setup-aftman@v0.4.2
       - run: aftman install
+      - run: rojo build -o Spectre.rbxm
+  upload-artifact:
+    name: Upload Spectre artifact
+    runs-on: windows-latest
+    steps:
+      - uses: actions/upload-artifact@v4.0.0
+        with: 
+          name: Spectre.rbxm
+          path: Spectre.rbxm
