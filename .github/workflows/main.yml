@@ -9,10 +9,14 @@ jobs:
     name: build
     runs-on: ubuntu-latest
     steps:
-      - uses: ok-nick/setup-aftman@v0.4.2
-
+      - name: Checkout files
+        uses: actions/checkout@v3
+        
       - name: Build
-        run: rojo build -o Spectre.rbxm
+        uses: CompeyDev/rojo-build-action@0.1.5
+        with:
+          output: model
+          type: rbxm
 
       - uses: actions/upload-artifact@v4.0.0
         with:
