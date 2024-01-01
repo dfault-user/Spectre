@@ -31,11 +31,10 @@ local Debris = game:GetService("Debris")
 
 local Modules = script["Modules"]
 local Subsystems = script["Subsystems"]
-local ExternalSubsystems = script["ExternalSubsystems"]
 local Commands = script["Commands"]
 
 Spectre = {
-	Version = 'alpha-1',
+	Version = 'alpha-3',
 	
 	Settings = require(script["Settings"]),
 	
@@ -51,9 +50,6 @@ Spectre = {
 		
 	},
 	
-	ExternalSubsystems = {
-
-	},
 	
 	Commands = {
 		
@@ -83,24 +79,12 @@ for i,v in pairs(Subsystems:GetChildren()) do
 	end
 end
 
--- Load Spectre External Subsystems
-for i,v in pairs(ExternalSubsystems:GetChildren()) do
-	Spectre.ExternalSubsystems[v.Name] = require(v)
-	local HasAddtCommands = v:FindFirstChildWhichIsA("Folder", false).Name == "SpectreCommands"
-	
-	if HasAddtCommands then
-		for i,v in pairs(v:FindFirstChild("SpectreCommands"):GetChildren()) do
-			Spectre.Commands[v.Name] = require(v)
-		end
-	end
-end
-
 Modules = Spectre.Modules
 Commands = Spectre.Commands
 Subsystems = Spectre.Subsystems
 ExternalSubsystems = Spectre.ExternalSubsystems
 
-Spectre.Modules.Output('Init',`Kickstarted with {Modules.DictLength(Modules)} modules, {Modules.DictLength(Commands)} commands, and {Modules.DictLength(Subsystems)+Modules.DictLength(ExternalSubsystems)} subsystems`)
+Spectre.Modules.Output('Init',`Kickstarted with {Modules.DictLength(Modules)} modules, {Modules.DictLength(Commands)} commands, and {Modules.DictLength(Subsystems)} subsystems`)
 
 function Spectre:isAdmin(Player: Player)
 	return Spectre.Modules.PlayerExistsInTable(Player, Spectre.Settings.Admins)
