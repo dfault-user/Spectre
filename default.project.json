@@ -1,6 +1,7 @@
 {
-  "name": "project",
+  "name": "Spectre",
   "tree": {
-    "$className": "DataModel"
+    "$path": "src/Spectre",
+    "$ignoreUnknownInstances": true
   }
 }
