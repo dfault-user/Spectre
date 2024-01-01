@@ -6,4 +6,4 @@
 
 # Visual Studio Code
 .vscode/*
-!.vsocde/tasks.json
+!.vscode/tasks.json
