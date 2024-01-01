@@ -19,7 +19,6 @@ jobs:
     steps:
       - name: Build
         uses: CompeyDev/rojo-build-action@0.1.5
-        needs:
         with:
           output: model
           type: rbxm
