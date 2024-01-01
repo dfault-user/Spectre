@@ -21,4 +21,4 @@ jobs:
       - uses: actions/upload-artifact@v4.0.0
         with:
           name: Spectre
-          path: ./Spectre.rbxm
+          path: ${{ GITHUB_WORKSPACE }}/Spectre.rbxm
