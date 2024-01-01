@@ -1,0 +1,12 @@
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  pull-rojo:
+    name: Pull Rojo from Aftman
+    runs-on: windows-latest
+    steps:
+      - uses: ok-nick/setup-aftman@v0.4.2
+      - run: aftman install
