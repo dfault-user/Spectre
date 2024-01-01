@@ -59,7 +59,12 @@ end
 -- Load Spectre Subsystems
 for i, v in pairs(Subsystems:GetChildren()) do
 	Spectre.Subsystems[v.Name] = require(v)
-	local HasAddtCommands = v:FindFirstChildWhichIsA("Folder", false).Name == "SpectreCommands"
+	local HasAddtCommands
+	local Success, Result = pcall(v.FindFirstChildWhichIsA, v, "Folder", false)
+
+	if Success and Result then
+		HasAddtCommands = Result
+	end
 
 	if HasAddtCommands then
 		for i, v in pairs(v:FindFirstChild("SpectreCommands"):GetChildren()) do
