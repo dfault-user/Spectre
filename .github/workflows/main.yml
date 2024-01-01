@@ -1,21 +1,27 @@
+name: rojo
+ 
 on:
   push:
-    branches:
-    - master
+    branches: [master]
+    tags: 
+      - v**
+  pull_request:
+    branches: [master]
+  release:
+    types: [published]
+  workflow_dispatch:
 
 jobs:
-  build-spectre:
-    name: Build Spectre
-    runs-on: windows-latest
+  build:
+    name: build
+    runs-on: ubuntu-latest
     steps:
       - uses: ok-nick/setup-aftman@v0.4.2
-      - run: aftman install
-      - run: rojo build -o Spectre.rbxm
-  upload-artifact:
-    name: Upload Spectre artifact
-    runs-on: windows-latest
-    steps:
+
+      - name: Build
+        run: rojo build -o Spectre.rbxm
+
       - uses: actions/upload-artifact@v4.0.0
-        with: 
-          name: Spectre.rbxm
+        with:
+          name: Spectre
           path: Spectre.rbxm
