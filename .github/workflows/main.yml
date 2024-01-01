@@ -3,30 +3,18 @@ name: rojo
 on:
   push:
     branches: [master]
-    tags: 
-      - v**
-  pull_request:
-    branches: [master]
-  release:
-    types: [published]
-  workflow_dispatch:
 
 jobs:
   build:
     name: build
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout files
-    - uses: actions/checkout@v3
+      - uses: ok-nick/setup-aftman@v0.4.2
 
-    - name: Setup Aftman
-    - uses: ok-nick/setup-aftman@v0.4.2
+      - name: Build
+        run: rojo build -o Spectre.rbxm
 
-    - name: Build w/ Rojo
-    - run: rojo build -o Spectre.rbxm
-
-    - name: Upload artifacts
-    - uses: actions/upload-artifact@v4.0.0
-      with:
-        name: Spectre
-        path: Spectre.rbxm
+      - uses: actions/upload-artifact@v4.0.0
+        with:
+          name: Spectre
+          path: Spectre.rbxm
