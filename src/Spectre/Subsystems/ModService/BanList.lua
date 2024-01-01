@@ -3,9 +3,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local Spectre = ServerScriptService["Spectre"]
 
 BanList = {
-	Bans = {
-		"Control22:18875912",
-	},
+	Bans = require(Spectre["Settings"]).Banned,
 }
 
 function BanList:Add(Player: Player)
@@ -30,7 +28,7 @@ function BanList:IsBanned(Player: Player)
 			return false
 		end
 	else
-		warn("Offending player is game creator, silently dropping")
+		warn("Player is game creator, silently dropping")
 	end
 end
 

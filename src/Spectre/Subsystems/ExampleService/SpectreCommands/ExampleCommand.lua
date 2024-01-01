@@ -14,7 +14,7 @@ return {
 	Command = "exm", -- Actual command call
 
 	Exec = function(plr, ...)
-		local Size = Subsystem:Test(...)
+		local Size = Subsystem:Test(table.concat(..., " "))
 		return Size
 	end,
 }

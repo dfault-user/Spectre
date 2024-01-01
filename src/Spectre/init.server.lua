@@ -114,7 +114,7 @@ function Spectre:RegisterCommand(
 				elseif s then
 					Spectre.Modules.Output(
 						`{CommandModule.Command}`,
-						`{Player} executed command {CommandModule.Command} with arguments {table.unpack(arguments)}`
+						`{Player} executed command {CommandModule.Command} with arguments {table.concat(arguments, "/")}`
 					)
 					return true
 				end
