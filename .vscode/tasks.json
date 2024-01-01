@@ -6,7 +6,7 @@
         {
             "label": "Build with Rojo",
             "type": "shell",
-            "command": "rojo build -o Spectre.rbxm",
+            "command": "rojo build -o Spectre.rbxm && git add . && git commit",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
