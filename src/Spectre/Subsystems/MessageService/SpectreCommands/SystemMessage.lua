@@ -3,7 +3,7 @@ local Spectre = ServerScriptService["Spectre"]
 local Subsystem = require(script.Parent.Parent)
 local Modules = {}
 
-for i,v in pairs(Spectre["Modules"]:GetChildren()) do
+for i, v in pairs(Spectre["Modules"]:GetChildren()) do
 	Modules[v.Name] = require(v)
 end
 
@@ -13,11 +13,11 @@ return {
 	HookIdent = "ANCSM",
 	Command = "systemmessage",
 
-	Exec = function(plr,args)
+	Exec = function(plr, args)
 		Subsystem:PushMessage({
 			MessagePresentation = "Message",
 			MessageType = "System",
-			String = table.concat(args,' ')
-		},plr)
+			String = table.concat(args, " "),
+		}, plr)
 	end,
 }

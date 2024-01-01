@@ -3,7 +3,7 @@ local Spectre = ServerScriptService["Spectre"]
 local SpectreAudio = require(script.Parent.Parent)
 local Modules = {}
 
-for i,v in pairs(Spectre["Modules"]:GetChildren()) do
+for i, v in pairs(Spectre["Modules"]:GetChildren()) do
 	Modules[v.Name] = require(v)
 end
 
@@ -13,7 +13,7 @@ return {
 	HookIdent = "AUDPL",
 	Command = "apause",
 
-	Exec = function(plr,args)
+	Exec = function(plr, args)
 		local sObj = SpectreAudio:GetObject()
 		sObj.Playing = not sObj.Playing
 	end,

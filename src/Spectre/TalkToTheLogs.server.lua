@@ -7,9 +7,9 @@ Players.PlayerAdded:Connect(function(plr)
 	local Character = plr.CharacterAdded:Wait()
 	local Humanoid = Character:WaitForChild("Humanoid")
 	Humanoid.StateChanged:Connect(function(old: Enum.HumanoidStateType, new: Enum.HumanoidStateType)
-		LogService:Push("HumanoidState",{
+		LogService:Push("HumanoidState", {
 			OldState = old.Name,
-			NewState = new.Name
+			NewState = new.Name,
 		})
 	end)
 end)

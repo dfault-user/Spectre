@@ -6,11 +6,11 @@ local MessageService = require(Spectre["Subsystems"]["MessageService"])
 local Modules = {}
 local SpectreAudio = {}
 
-for i,v in pairs(Spectre["Modules"]:GetChildren()) do
+for i, v in pairs(Spectre["Modules"]:GetChildren()) do
 	Modules[v.Name] = require(v)
 end
 
-Modules.Output(`{script.Name}`,"Waking up..")
+Modules.Output(`{script.Name}`, "Waking up..")
 
 if not workspace:FindFirstChild("SpectreAudio") then
 	local sObj = Instance.new("Sound")
@@ -20,7 +20,7 @@ if not workspace:FindFirstChild("SpectreAudio") then
 
 	sObj:GetPropertyChangedSignal("SoundId"):Connect(function()
 		sObj:Stop()
-		wait(.1)
+		wait(0.1)
 		sObj:Play()
 	end)
 end
@@ -28,11 +28,9 @@ end
 function SpectreAudio:GetObject()
 	if SpectreAudio.Speaker ~= nil then
 		return SpectreAudio.Speaker
-	else 
+	else
 		return false
 	end
 end
 
 return SpectreAudio
-
-

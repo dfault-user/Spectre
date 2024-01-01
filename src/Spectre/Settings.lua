@@ -2,15 +2,11 @@ Settings = {
 	Seperator = "/",
 
 	Admins = {
-		"Control22"
+		"Control22",
 	},
 
-	Banned = {
-
-	},
-	Blacklist = {
-
-	},
+	Banned = {},
+	Blacklist = {},
 }
 
 return Settings

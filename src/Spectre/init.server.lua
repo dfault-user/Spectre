@@ -28,52 +28,41 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Debris = game:GetService("Debris")
 
-
 local Modules = script["Modules"]
 local Subsystems = script["Subsystems"]
 local Commands = script["Commands"]
 
 Spectre = {
-	Version = 'alpha-3',
-	
+	Version = "alpha-3",
+
 	Settings = require(script["Settings"]),
-	
-	ChatHooks = {
-		
-	},
-	
-	Modules = {
 
-	},
-	
-	Subsystems = {
-		
-	},
-	
-	
-	Commands = {
-		
-	},
+	ChatHooks = {},
 
+	Modules = {},
+
+	Subsystems = {},
+
+	Commands = {},
 }
 
 -- Load Spectre Modules
-for i,v in pairs(Modules:GetChildren()) do
+for i, v in pairs(Modules:GetChildren()) do
 	Spectre.Modules[v.Name] = require(v)
 end
 
 -- Load Spectre Internal Commands
-for i,v in pairs(Commands:GetChildren()) do
+for i, v in pairs(Commands:GetChildren()) do
 	Spectre.Commands[v.Name] = require(v)
 end
 
 -- Load Spectre Subsystems
-for i,v in pairs(Subsystems:GetChildren()) do
+for i, v in pairs(Subsystems:GetChildren()) do
 	Spectre.Subsystems[v.Name] = require(v)
 	local HasAddtCommands = v:FindFirstChildWhichIsA("Folder", false).Name == "SpectreCommands"
-	
+
 	if HasAddtCommands then
-		for i,v in pairs(v:FindFirstChild("SpectreCommands"):GetChildren()) do
+		for i, v in pairs(v:FindFirstChild("SpectreCommands"):GetChildren()) do
 			Spectre.Commands[v.Name] = require(v)
 		end
 	end
@@ -84,44 +73,54 @@ Commands = Spectre.Commands
 Subsystems = Spectre.Subsystems
 ExternalSubsystems = Spectre.ExternalSubsystems
 
-Spectre.Modules.Output('Init',`Kickstarted with {Modules.DictLength(Modules)} modules, {Modules.DictLength(Commands)} commands, and {Modules.DictLength(Subsystems)} subsystems`)
+Spectre.Modules.Output(
+	"Init",
+	`Kickstarted with {Modules.DictLength(Modules)} modules, {Modules.DictLength(Commands)} commands, and {Modules.DictLength(Subsystems)} subsystems`
+)
 
 function Spectre:isAdmin(Player: Player)
 	return Spectre.Modules.PlayerExistsInTable(Player, Spectre.Settings.Admins)
 end
 
-function Spectre:RegisterCommand(Player: Player, CommandModule: {
+function Spectre:RegisterCommand(
+	Player: Player,
+	CommandModule: {
 		NonAdmin: boolean,
 		Description: string,
 		HookIdent: string,
 		Command: string,
-		Exec: any
-	})
-	
+		Exec: any,
+	}
+)
 	local isAdmin = Spectre:isAdmin(Player)
 	if CommandModule.NonAdmin or isAdmin then
 		local chStr = (`{CommandModule.Command}{Spectre.Settings.Seperator}`):lower()
 
 		Spectre.ChatHooks[`{Player}`][`{CommandModule.HookIdent}`] = Player.Chatted:Connect(function(message)
-			if message:sub(1,#chStr) == chStr then
-				local arguments = message:sub(#chStr+1):split(Spectre.Settings.Seperator)
-				local s,e = pcall(CommandModule.Exec,Player,arguments)
+			if message:sub(1, #chStr) == chStr then
+				local arguments = message:sub(#chStr + 1):split(Spectre.Settings.Seperator)
+				local s, e = pcall(CommandModule.Exec, Player, arguments)
 				if not s and e then
-					Spectre.Modules.Output(`{CommandModule.Command}`,`{Player} failed to execute command {CommandModule.Command}: {e}`)
+					Spectre.Modules.Output(
+						`{CommandModule.Command}`,
+						`{Player} failed to execute command {CommandModule.Command}: {e}`
+					)
 					return false
 				elseif s then
-					Spectre.Modules.Output(`{CommandModule.Command}`, `{Player} executed command {CommandModule.Command} with arguments {table.unpack(arguments)}`)
+					Spectre.Modules.Output(
+						`{CommandModule.Command}`,
+						`{Player} executed command {CommandModule.Command} with arguments {table.unpack(arguments)}`
+					)
 					return true
 				end
-			end 
+			end
 		end)
 	end
-	
+
 	return 1
 end
 
 local function PlayerAdded(plr: Player)
-	
 	pcall(function()
 		if Spectre.ChatHooks[plr.Name] == nil then
 			Spectre.ChatHooks[plr.Name] = {}
@@ -129,22 +128,21 @@ local function PlayerAdded(plr: Player)
 			table.clear(Spectre.ChatHooks[plr.Name])
 		end
 	end)
-	
+
 	local registered = 0
-	for cmdR,cmd in pairs(Spectre.Commands) do
-		registered+=Spectre:RegisterCommand(plr,cmd)
+	for cmdR, cmd in pairs(Spectre.Commands) do
+		registered += Spectre:RegisterCommand(plr, cmd)
 	end
-	
-	Spectre.Modules.Output('Init',`Registered {registered} commands for {plr}`)
-	
+
+	Spectre.Modules.Output("Init", `Registered {registered} commands for {plr}`)
 end
 
 local function PlayerRemoving(plr: Player)
-	for i,v in pairs(Spectre.ChatHooks[`{plr}`]) do
+	for i, v in pairs(Spectre.ChatHooks[`{plr}`]) do
 		print(`Detaching {v} from {plr}`)
-		v:Disconnect();
+		v:Disconnect()
 	end
-	
+
 	Spectre.ChatHooks[`{plr}`] = nil
 end
 
