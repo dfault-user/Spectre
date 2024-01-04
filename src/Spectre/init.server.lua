@@ -153,3 +153,6 @@ end
 
 Players.PlayerAdded:Connect(PlayerAdded)
 Players.PlayerRemoving:Connect(PlayerRemoving)
+
+
+-- hello bro
