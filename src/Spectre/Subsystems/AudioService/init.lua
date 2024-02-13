@@ -14,9 +14,9 @@ for i, v in pairs(Spectre["Modules"]:GetChildren()) do
 	Modules[v.Name] = require(v)
 end
 
-Subsystems.LogService:Push("Spectre",{
+Subsystems.LogService:Push("Spectre", {
 	Origin = "AudioService",
-	Ready = true
+	Ready = true,
 })
 
 if not workspace:FindFirstChild("SpectreAudio") then
@@ -41,7 +41,7 @@ function SpectreAudio:GetObject()
 end
 
 SpectreAudio.API = {
-	GetObject = SpectreAudio.GetObject
+	GetObject = SpectreAudio.GetObject,
 }
 
 return SpectreAudio

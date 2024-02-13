@@ -63,18 +63,18 @@ for i, Subsystem in pairs(Subsystems:GetChildren()) do
 	Spectre.Subsystems[Subsystem.Name] = require(Subsystem)
 	local HasAddtCommands
 	local HasAddtModules
-	
+
 	local AddtCommands = Modules.SafeFind(Subsystem, "SpectreCommands", "Folder")
-	local AddtModules = Modules.SafeFind(Subsystem, "SpectreModules", "Folder")	
-	
+	local AddtModules = Modules.SafeFind(Subsystem, "SpectreModules", "Folder")
+
 	if AddtCommands then
-		for _,Command in pairs(AddtCommands:GetChildren()) do
+		for _, Command in pairs(AddtCommands:GetChildren()) do
 			Spectre.Commands[Command.Name] = require(Command)
 		end
 	end
 
 	if AddtModules then
-		for _,Module in pairs(AddtModules:GetChildren()) do
+		for _, Module in pairs(AddtModules:GetChildren()) do
 			if Spectre.Modules[Module.Name] then
 				warn(`Attempting to deduplicate incoming module {Module.Name} from {Subsystem.Name}`)
 				Spectre.Modules[`{Module.Name}.{Subsystem.Name}`] = require(Module)
@@ -83,7 +83,6 @@ for i, Subsystem in pairs(Subsystems:GetChildren()) do
 			end
 		end
 	end
-	
 end
 
 Commands = Spectre.Commands
@@ -92,16 +91,14 @@ Subsystems = Spectre.Subsystems
 -- Initialize Spectre as a global thing
 _G.Spectre = {
 	Modules = Modules,
-	Subsystems = {}
+	Subsystems = {},
 }
 
 -- Selectively add subsystems with an API to the global thing
-for i,v in pairs(Subsystems) do
+for i, v in pairs(Subsystems) do
 	local hasAPI = v["API"] ~= nil
-	
-	if hasAPI then
-		_G.Spectre["Subsystems"][i] = v.API
-	end
+
+	if hasAPI then _G.Spectre["Subsystems"][i] = v.API end
 end
 
 Spectre.Modules.Output(
@@ -109,9 +106,7 @@ Spectre.Modules.Output(
 	`Kickstarted with {Modules.DictLength(Modules)} modules, {Modules.DictLength(Commands)} commands, and {Modules.DictLength(Subsystems)} subsystems`
 )
 
-function Spectre:isAdmin(Player: Player)
-	return Spectre.Modules.PlayerExistsInTable(Player, Spectre.Settings.Admins)
-end
+function Spectre:isAdmin(Player: Player) return Spectre.Modules.PlayerExistsInTable(Player, Spectre.Settings.Admins) end
 
 function Spectre:RegisterCommand(
 	Player: Player,
@@ -140,7 +135,7 @@ function Spectre:RegisterCommand(
 				elseif s then
 					Spectre.Modules.Output(
 						`{CommandModule.Command}`,
-						`{Player} executed command {CommandModule.Command} with arguments {table.concat(arguments,'/')}`
+						`{Player} executed command {CommandModule.Command} with arguments {table.concat(arguments, "/")}`
 					)
 					return true
 				end
@@ -169,7 +164,10 @@ local function PlayerAdded(plr: Player)
 end
 
 local function PlayerRemoving(plr: Player)
-	Spectre.Modules.Output("Detach",`Deregistered {Modules.DictLength(Spectre.ChatHooks[`{plr}`])} commands from {plr}`)
+	Spectre.Modules.Output(
+		"Detach",
+		`Deregistered {Modules.DictLength(Spectre.ChatHooks[`{plr}`])} commands from {plr}`
+	)
 	for i, v in pairs(Spectre.ChatHooks[`{plr}`]) do
 		v:Disconnect()
 	end

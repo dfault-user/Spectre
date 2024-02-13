@@ -12,7 +12,5 @@ return {
 	HookIdent = "TST",
 	Command = "test",
 
-	Exec = function(plr, ...)
-		print(...)
-	end,
+	Exec = function(plr, ...) print(...) end,
 }

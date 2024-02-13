@@ -11,9 +11,9 @@ for i, v in pairs(Spectre["Modules"]:GetChildren()) do
 	Modules[v.Name] = require(v)
 end
 
-Subsystems.LogService:Push("Spectre",{
+Subsystems.LogService:Push("Spectre", {
 	Origin = "MessageService",
-	Ready = true
+	Ready = true,
 })
 
 -- Typedefs
@@ -58,9 +58,7 @@ setmetatable(Announcements.IncomingMessages, {
 		NewMsg.Text = String
 		NewMsg.Parent = workspace
 
-		delay(5, function()
-			NewMsg:Destroy()
-		end)
+		delay(5, function() NewMsg:Destroy() end)
 	end,
 })
 

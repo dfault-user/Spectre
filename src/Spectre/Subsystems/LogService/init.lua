@@ -25,30 +25,24 @@ setmetatable(LogService.Logs, {
 })
 
 function LogService:Push(compartment: string, object: {})
-	if LogService.Logs[compartment] == nil then
-		LogService.Logs[compartment] = {}
-	end
+	if LogService.Logs[compartment] == nil then LogService.Logs[compartment] = {} end
 
 	object["LS_TIMESTAMP"] = DateTime.now().UnixTimestampMillis
 	LogService.Logs[compartment][#LogService.Logs[compartment] + 1] = object
 end
 
-function LogService:PullAll()
-	return LogService.Logs
-end
+function LogService:PullAll() return LogService.Logs end
 
-function LogService:GetSize()
-	return #HttpService:JSONEncode(LogService:PullAll())
-end
+function LogService:GetSize() return #HttpService:JSONEncode(LogService:PullAll()) end
 
 LogService.API = {
 	GetSize = LogService.GetSize,
 	PullAll = LogService.PullAll,
-	Push = LogService.Push
+	Push = LogService.Push,
 }
 
-LogService:Push('LogService',{
-	Ready = true
+LogService:Push("LogService", {
+	Ready = true,
 })
 
 game:BindToClose(function()

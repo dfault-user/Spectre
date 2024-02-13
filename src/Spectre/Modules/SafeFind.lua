@@ -1,9 +1,9 @@
 local function SafeFind(instance: Instance, find: string, classname: string)
 	local FindSuccess, FindResult = pcall(function()
 		local FindFirstChild = instance:FindFirstChild(find)
-		
-		if FindFirstChild then 
-			if classname~=nil and instance:IsA(classname) then
+
+		if FindFirstChild then
+			if classname ~= nil and instance:IsA(classname) then
 				return FindFirstChild
 			else
 				return FindFirstChild
@@ -12,7 +12,7 @@ local function SafeFind(instance: Instance, find: string, classname: string)
 			return false
 		end
 	end)
-	
+
 	if FindSuccess and FindResult then
 		return FindResult
 	else
