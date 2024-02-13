@@ -76,7 +76,21 @@ end
 Modules = Spectre.Modules
 Commands = Spectre.Commands
 Subsystems = Spectre.Subsystems
-ExternalSubsystems = Spectre.ExternalSubsystems
+
+-- Initialize Spectre as a global thing
+_G.Spectre = {
+	Modules = Modules,
+	Subsystems = {}
+}
+
+-- Selectively add subsystems with an API to the global thing
+for i,v in pairs(Subsystems) do
+	local hasAPI = v["API"] ~= nil
+	
+	if hasAPI then
+		_G.Spectre["Subsystems"][i] = v.API
+	end
+end
 
 Spectre.Modules.Output(
 	"Init",
@@ -143,7 +157,7 @@ local function PlayerAdded(plr: Player)
 end
 
 local function PlayerRemoving(plr: Player)
-	Spectre.Modules.Output("Detach",`Deregistered {Spectre.Modules.DictLength(Spectre.ChatHooks[`{plr}`])} commands from {plr}`)
+	Spectre.Modules.Output("Detach",`Deregistered {Modules.DictLength(Spectre.ChatHooks[`{plr}`])} commands from {plr}`)
 	for i, v in pairs(Spectre.ChatHooks[`{plr}`]) do
 		v:Disconnect()
 	end
