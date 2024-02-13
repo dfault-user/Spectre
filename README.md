@@ -1,5 +1,6 @@
 # Spectre
 An extensible admin system for Roblox
+![Build](https://github.com/dfault-user/Spectre/actions/workflows/rojo-build.yml/badge.svg)
 ## How to build Spectre
 1. [Install Rojo](https://rojo.space/docs/v7/getting-started/installation/) with your preferred method
 2. `git clone` this repository, preferably
