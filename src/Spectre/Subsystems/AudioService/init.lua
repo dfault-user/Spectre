@@ -4,13 +4,20 @@ local MarketplaceService = game:GetService("MarketplaceService")
 local Spectre = ServerScriptService["Spectre"]
 local MessageService = require(Spectre["Subsystems"]["MessageService"])
 local Modules = {}
+local Subsystems = {
+	LogService = require(Spectre["Subsystems"]["LogService"]),
+}
+
 local SpectreAudio = {}
 
 for i, v in pairs(Spectre["Modules"]:GetChildren()) do
 	Modules[v.Name] = require(v)
 end
 
-Modules.Output(`{script.Name}`, "Waking up..")
+Subsystems.LogService:Push("Spectre",{
+	Origin = "AudioService",
+	Ready = true
+})
 
 if not workspace:FindFirstChild("SpectreAudio") then
 	local sObj = Instance.new("Sound")

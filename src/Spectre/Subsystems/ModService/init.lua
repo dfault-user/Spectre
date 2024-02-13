@@ -10,8 +10,6 @@ for i, v in pairs(Spectre["Modules"]:GetChildren()) do
 	Modules[v.Name] = require(v)
 end
 
-Modules.Output(`{script.Name}`, "Waking up..")
-
 -- Typedefs
 type ModerationAction = {
 	Type: "Kick" | "Ban",
@@ -84,6 +82,11 @@ function ModService.PlayerAdded(AddingPlayer: Player)
 end
 
 Players.PlayerAdded:Connect(ModService.PlayerAdded)
+
+Subsystems.LogService:Push("Spectre",{
+	Origin = "ModService",
+	Ready = true
+})
 
 -- End bit
 return ModService

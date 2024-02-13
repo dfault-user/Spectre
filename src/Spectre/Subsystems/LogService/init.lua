@@ -41,25 +41,19 @@ function LogService:GetSize()
 	return #HttpService:JSONEncode(LogService:PullAll())
 end
 
-Players.PlayerAdded:Connect(function(plr: Player)
-	LogService:Push("PlayerAdded", {
-		Player = `{plr}`,
-	})
+LogService.API = {
+	GetSize = LogService.GetSize,
+	PullAll = LogService.PullAll,
+	Push = LogService.Push
+}
 
-	plr.Chatted:Connect(function(msg: string, recp: Player)
-		LogService:Push("Chat", {
-			Player = `{plr}`,
-			Message = msg,
-			SentTo = recp,
-		})
-	end)
-end)
-Players.PlayerRemoving:Connect(function(plr: Player)
-	LogService:Push("PlayerRemoving", {
-		Player = `{plr}`,
-	})
-end)
+LogService:Push('LogService',{
+	Ready = true
+})
+
 game:BindToClose(function()
+	Modules.RecursiveFreeze(LogService:PullAll())
 	print(HttpService:JSONEncode(LogService:PullAll()))
 end)
+
 return LogService

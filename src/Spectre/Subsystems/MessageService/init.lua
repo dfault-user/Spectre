@@ -11,7 +11,10 @@ for i, v in pairs(Spectre["Modules"]:GetChildren()) do
 	Modules[v.Name] = require(v)
 end
 
-Modules.Output("MessageService", "Waking up..")
+Subsystems.LogService:Push("Spectre",{
+	Origin = "MessageService",
+	Ready = true
+})
 
 -- Typedefs
 type MessageObject = {
