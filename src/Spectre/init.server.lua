@@ -33,7 +33,7 @@ local Subsystems = script["Subsystems"]
 local Commands = script["Commands"]
 
 Spectre = {
-	Version = "alpha-3",
+	Version = "beta-1",
 
 	Settings = require(script["Settings"]),
 
