@@ -51,29 +51,41 @@ for i, v in pairs(Modules:GetChildren()) do
 	Spectre.Modules[v.Name] = require(v)
 end
 
+Modules = Spectre.Modules
+
 -- Load Spectre Internal Commands
 for i, v in pairs(Commands:GetChildren()) do
 	Spectre.Commands[v.Name] = require(v)
 end
 
 -- Load Spectre Subsystems
-for i, v in pairs(Subsystems:GetChildren()) do
-	Spectre.Subsystems[v.Name] = require(v)
+for i, Subsystem in pairs(Subsystems:GetChildren()) do
+	Spectre.Subsystems[Subsystem.Name] = require(Subsystem)
 	local HasAddtCommands
-	local Success, Result = pcall(v.FindFirstChildWhichIsA, v, "Folder", false)
-
-	if Success and Result then
-		HasAddtCommands = Result
-	end
-
-	if HasAddtCommands then
-		for i, v in pairs(v:FindFirstChild("SpectreCommands"):GetChildren()) do
-			Spectre.Commands[v.Name] = require(v)
+	local HasAddtModules
+	
+	local AddtCommands = Modules.SafeFind(Subsystem, "SpectreCommands", "Folder")
+	local AddtModules = Modules.SafeFind(Subsystem, "SpectreModules", "Folder")	
+	
+	if AddtCommands then
+		for _,Command in pairs(AddtCommands:GetChildren()) do
+			Spectre.Commands[Command.Name] = require(Command)
 		end
 	end
+
+	if AddtModules then
+		for _,Module in pairs(AddtModules:GetChildren()) do
+			if Spectre.Modules[Module.Name] then
+				warn(`Attempting to deduplicate incoming module {Module.Name} from {Subsystem.Name}`)
+				Spectre.Modules[`{Module.Name}.{Subsystem.Name}`] = require(Module)
+			else
+				Spectre.Modules[Module.Name] = require(Module)
+			end
+		end
+	end
+	
 end
 
-Modules = Spectre.Modules
 Commands = Spectre.Commands
 Subsystems = Spectre.Subsystems
 
