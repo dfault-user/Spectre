@@ -6,6 +6,7 @@ local function DeepFreeze(tabl)
 			DeepFreeze(v)
 		end
 	end
+
 end
 
 return DeepFreeze

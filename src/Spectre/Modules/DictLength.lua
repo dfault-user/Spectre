@@ -1,9 +1,9 @@
 local function Length(Table)
-	local counter = 0
+	local i = 0
 	for _, v in pairs(Table) do
-		counter = counter + 1
+		i+=1
 	end
-	return counter
+	return i
 end
 
 return Length
