@@ -114,7 +114,7 @@ function Spectre:RegisterCommand(
 				elseif s then
 					Spectre.Modules.Output(
 						`{CommandModule.Command}`,
-						`{Player} executed command {CommandModule.Command} with arguments {table.concat(arguments, "/")}`
+						`{Player} executed command {CommandModule.Command} with arguments {table.concat(arguments,'/')}`
 					)
 					return true
 				end
@@ -143,16 +143,12 @@ local function PlayerAdded(plr: Player)
 end
 
 local function PlayerRemoving(plr: Player)
+	Spectre.Modules.Output("Detach",`Deregistered {Spectre.Modules.DictLength(Spectre.ChatHooks[`{plr}`])} commands from {plr}`)
 	for i, v in pairs(Spectre.ChatHooks[`{plr}`]) do
-		print(`Detaching {v} from {plr}`)
 		v:Disconnect()
 	end
-
 	Spectre.ChatHooks[`{plr}`] = nil
 end
 
 Players.PlayerAdded:Connect(PlayerAdded)
 Players.PlayerRemoving:Connect(PlayerRemoving)
-
-
--- hello bro
