@@ -33,4 +33,8 @@ function SpectreAudio:GetObject()
 	end
 end
 
+SpectreAudio.API = {
+	GetObject = SpectreAudio.GetObject
+}
+
 return SpectreAudio

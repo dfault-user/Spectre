@@ -6,12 +6,12 @@
         {
             "label": "Build with Rojo",
             "type": "shell",
-            "command": "git add . && git commit && git push",
+            "command": "rojo build -o Spectre.rbxm",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
-        },
+        }
     ]
 }
