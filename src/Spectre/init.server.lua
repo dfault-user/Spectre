@@ -53,7 +53,7 @@ for _, Module in pairs(Modules:GetChildren()) do
 end
 
 Modules = Spectre.Modules
-Modules.Output("Spectre",`Registered {Modules.DictLength(Modules)} internal modules`)
+Modules.Output("Spectre", `Registered {Modules.DictLength(Modules)} internal modules`)
 
 -- Load Spectre Internal Commands
 for _, Command in pairs(Commands:GetChildren()) do
@@ -87,13 +87,16 @@ for i, Subsystem in pairs(Subsystems:GetChildren()) do
 				local RequiredModule = require(Module)
 				Spectre.Modules[Module.Name] = RequiredModule
 			end
-		end		
+		end
 	end
 end
 
 Commands = Spectre.Commands
 Subsystems = Spectre.Subsystems
-Modules.Output("Init",`Registered {Modules.DictLength(Modules)} modules and {Modules.DictLength(Subsystems)} subsystems`)
+Modules.Output(
+	"Init",
+	`Registered {Modules.DictLength(Modules)} modules and {Modules.DictLength(Subsystems)} subsystems`
+)
 -- Initialize Spectre as a global thing
 _G.Spectre = {
 	Modules = Modules,
