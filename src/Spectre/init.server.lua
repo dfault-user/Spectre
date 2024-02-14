@@ -47,15 +47,17 @@ Spectre = {
 }
 
 -- Load Spectre Modules
-for i, v in pairs(Modules:GetChildren()) do
-	Spectre.Modules[v.Name] = require(v)
+for _, Module in pairs(Modules:GetChildren()) do
+	local RequiredModule = require(Module)
+	Spectre.Modules[Module.Name] = require(Module)
 end
 
 Modules = Spectre.Modules
+Modules.Output("Spectre",`Registered {Modules.DictLength(Modules)} internal modules`)
 
 -- Load Spectre Internal Commands
-for i, v in pairs(Commands:GetChildren()) do
-	Spectre.Commands[v.Name] = require(v)
+for _, Command in pairs(Commands:GetChildren()) do
+	Spectre.Commands[Command.Name] = require(Command)
 end
 
 -- Load Spectre Subsystems
@@ -69,25 +71,29 @@ for i, Subsystem in pairs(Subsystems:GetChildren()) do
 
 	if AddtCommands then
 		for _, Command in pairs(AddtCommands:GetChildren()) do
-			Spectre.Commands[Command.Name] = require(Command)
+			local RequiredCommand = require(Command)
+			Spectre.Commands[Command.Name] = RequiredCommand
 		end
 	end
 
 	if AddtModules then
 		for _, Module in pairs(AddtModules:GetChildren()) do
 			if Spectre.Modules[Module.Name] then
+				local RequiredModule = require(Module)
 				warn(`Attempting to deduplicate incoming module {Module.Name} from {Subsystem.Name}`)
-				Spectre.Modules[`{Module.Name}.{Subsystem.Name}`] = require(Module)
+				local DedupName = `{Module.Name}.{Subsystem.Name}`
+				Spectre.Modules[DedupName] = RequiredModule
 			else
-				Spectre.Modules[Module.Name] = require(Module)
+				local RequiredModule = require(Module)
+				Spectre.Modules[Module.Name] = RequiredModule
 			end
-		end
+		end		
 	end
 end
 
 Commands = Spectre.Commands
 Subsystems = Spectre.Subsystems
-
+Modules.Output("Init",`Registered {Modules.DictLength(Modules)} modules and {Modules.DictLength(Subsystems)} subsystems`)
 -- Initialize Spectre as a global thing
 _G.Spectre = {
 	Modules = Modules,
@@ -103,7 +109,7 @@ end
 
 Spectre.Modules.Output(
 	"Init",
-	`Kickstarted with {Modules.DictLength(Modules)} modules, {Modules.DictLength(Commands)} commands, and {Modules.DictLength(Subsystems)} subsystems`
+	`Ready with {Modules.DictLength(Modules)} modules, {Modules.DictLength(Commands)} commands, and {Modules.DictLength(Subsystems)} subsystems`
 )
 
 function Spectre:isAdmin(Player: Player) return Spectre.Modules.PlayerExistsInTable(Player, Spectre.Settings.Admins) end
