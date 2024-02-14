@@ -19,7 +19,7 @@ return {
 			Type = "Kick",
 			Reason = args[2],
 			ActioningUser = plr,
-			OffendingUser = Subsystem:PartialMatch(args[1]),
+			OffendingUser = Modules.PartialMatch(args[1]),
 		})
 	end,
 }
