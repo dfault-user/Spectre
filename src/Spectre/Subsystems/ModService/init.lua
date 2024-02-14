@@ -26,11 +26,6 @@ local ModService = {
 local LogService = Subsystems["LogService"]
 
 -- Funcdefs
-function ModService:PartialMatch(str: string)
-	for _, player in ipairs(game.Players:GetPlayers()) do
-		if string.match(player.Name:lower(), "^" .. str:lower()) then return player end
-	end
-end
 
 function ModService:Action(ModerationAction: ModerationAction)
 	local ActionType = ModerationAction.Type
