@@ -114,10 +114,6 @@ LogService:Push("Spectre",
 {
   Origin = "ExampleThing",
   Ready = true
-}) -- The LogService allows for any arbitrary 'compartment' to be selected (it will be created if it does not already exist)
---    and for any arbitrary object information (in a table) to be sent back to the LogService to be consumed and entered into record.
---    This example just pushes to Spectre's compartment with a Origin and Ready object inside of a table that makes it clear to the logs that a service has started.
-
---    Spectre may require a 'ready' signal of some kind to be sent to the logs at some point in order to keep that service registered in Subsystems.
-
+})
 ```
+The LogService allows for any arbitrary 'compartment' to be selected (it will be created if it does not already exist) and for any arbitrary object information (in a table) to be sent back to the LogService to be consumed and entered into record. This example just pushes to Spectre's compartment with a Origin and Ready object inside of a table that makes it clear to the logs that a service has started. Spectre may require a 'ready' signal of some kind to be sent to the logs at some point in order to keep that service registered in Subsystems.
