@@ -45,4 +45,4 @@ ExampleService.API = {
 	Test = ExampleService.Test,
 }
 
-return ExampleService -- All services are modules
+return ExampleService -- All services are ModuleScripts
