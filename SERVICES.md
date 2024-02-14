@@ -98,7 +98,8 @@ When you start and then stop a test game with Spectre fully installed, you shoul
       "Origin": "ModService"
     }
   ]
-}```
+}
+```
 
 The LogService works something like this:
 ```lua
