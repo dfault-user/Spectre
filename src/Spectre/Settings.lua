@@ -3,7 +3,7 @@ local Players = game:GetService("Players")
 Settings = {
 	Seperator = "/",
 
-	AccessLevel = {
+	AccessLevels = {
 		Owner = {
 			`{Players:GetNameFromUserIdAsync(game.CreatorId)}.{game.CreatorId}`, -- "Control22:18875912"
 		},
