@@ -31,25 +31,63 @@ local Debris = game:GetService("Debris")
 local Modules = script["Modules"]
 local Subsystems = script["Subsystems"]
 local Commands = script["Commands"]
+local Libraries = script["Libraries"]
+
 
 Spectre = {
 	Version = "beta-1",
-
 	Settings = require(script["Settings"]),
 
-	ChatHooks = {},
+	Libraries = {},
 
 	Modules = {},
 
 	Subsystems = {},
 
 	Commands = {},
+
+	ChatHooks = {}
 }
+
+function Include(ModuleScript: ModuleScript, Type: "Module" | "Subsystem" | "Library")
+	local RequiredModule = require(ModuleScript)
+	
+	if Type == "Module" then
+		Spectre.Modules[ModuleScript.Name] = RequiredModule
+	elseif Type == "Subsystem" then
+		Spectre.Subsystems[ModuleScript.Name] = RequiredModule
+		local HasAddtCommands
+		local HasAddtModules
+	
+		local AddtCommands = Modules.SafeFind(ModuleScript, "SpectreCommands", "Folder")
+		local AddtModules = Modules.SafeFind(ModuleScript, "SpectreModules", "Folder")
+	
+		if AddtCommands then
+			for _, Command in pairs(AddtCommands:GetChildren()) do
+				local RequiredCommand = require(Command)
+				Spectre.Commands[Command.Name] = RequiredCommand
+			end
+		end
+	
+		if AddtModules then
+			for _, Module in pairs(AddtModules:GetChildren()) do
+				if Spectre.Modules[Module.Name] then
+					warn(`Attempting to deduplicate incoming module {Module.Name} from {ModuleScript.Name}`)
+					local DedupName = `{Module.Name}.{ModuleScript.Name}`
+					Spectre.Modules[DedupName] = RequiredModule
+				else
+					Spectre.Modules[Module.Name] = RequiredModule
+				end
+			end
+		end
+	elseif Type == "Library" then
+		Spectre.Libraries[ModuleScript] = RequiredModule
+	end
+end
 
 -- Load Spectre Modules
 for _, Module in pairs(Modules:GetChildren()) do
-	local RequiredModule = require(Module)
-	Spectre.Modules[Module.Name] = require(Module)
+	Include(Module, "Module")
 end
 
 Modules = Spectre.Modules
@@ -62,33 +100,7 @@ end
 
 -- Load Spectre Subsystems
 for i, Subsystem in pairs(Subsystems:GetChildren()) do
-	Spectre.Subsystems[Subsystem.Name] = require(Subsystem)
-	local HasAddtCommands
-	local HasAddtModules
-
-	local AddtCommands = Modules.SafeFind(Subsystem, "SpectreCommands", "Folder")
-	local AddtModules = Modules.SafeFind(Subsystem, "SpectreModules", "Folder")
-
-	if AddtCommands then
-		for _, Command in pairs(AddtCommands:GetChildren()) do
-			local RequiredCommand = require(Command)
-			Spectre.Commands[Command.Name] = RequiredCommand
-		end
-	end
-
-	if AddtModules then
-		for _, Module in pairs(AddtModules:GetChildren()) do
-			if Spectre.Modules[Module.Name] then
-				local RequiredModule = require(Module)
-				warn(`Attempting to deduplicate incoming module {Module.Name} from {Subsystem.Name}`)
-				local DedupName = `{Module.Name}.{Subsystem.Name}`
-				Spectre.Modules[DedupName] = RequiredModule
-			else
-				local RequiredModule = require(Module)
-				Spectre.Modules[Module.Name] = RequiredModule
-			end
-		end
-	end
+	Include(Subsystem, "Subsystem")
 end
 
 Commands = Spectre.Commands
@@ -115,7 +127,7 @@ Spectre.Modules.Output(
 	`Ready with {Modules.DictLength(Modules)} modules, {Modules.DictLength(Commands)} commands, and {Modules.DictLength(Subsystems)} subsystems`
 )
 
-function Spectre:isAdmin(Player: Player) return Spectre.Modules.PlayerExistsInTable(Player, Spectre.Settings.Admins) end
+function Spectre:isAdmin(Player: Player) return Spectre.Libraries.PlayerLib:CheckAccess(Player) end
 
 function Spectre:RegisterCommand(
 	Player: Player,
