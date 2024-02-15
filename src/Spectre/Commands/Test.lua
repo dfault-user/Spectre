@@ -7,7 +7,7 @@ for i, v in pairs(Spectre["Modules"]:GetChildren()) do
 end
 -- this is a test
 return {
-	NonAdmin = true,
+	AccessLevel = "Player",
 	Description = "Test command",
 	HookIdent = "TST",
 	Command = "test",
