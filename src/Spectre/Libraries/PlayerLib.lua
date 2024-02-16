@@ -10,27 +10,27 @@ local PlayerLib = {
 	RequiringObject = nil,
 }
 
-function PlayerLib:CheckAccess(CurrentAccessTable: {
-	['Owner']: {}, ['Administrator']: {}, ['Moderator']: {}, ['VIP']: {}
-	}, Player: Player)
+function PlayerLib:CheckAccess(
+	CurrentAccessTable, Player: Player
+)
+	local ReturnChannel = {
+		Role = "Player",
+		Priority = 0
+	}
 	
-	if CurrentAccessTable then
-		for AccessDict, PlayersInDict  in pairs(CurrentAccessTable) do
-			local PlayerHasAccess = (table.find(PlayersInDict, `{Player}.{Player.UserId}`) ~= nil)
-			
-			if PlayerHasAccess then
-			return {
-				HasAccess = PlayerHasAccess, 
-				AccessLevel = `{AccessDict}`
+	for CurRole,CurArray in pairs(CurrentAccessTable) do
+		if table.find(CurArray.Domain, `{Player.Name}:{Player.UserId}`) then
+			ReturnChannel = {
+				Role = CurRole,
+				Priority = CurArray.Priority
 			}
-			else 
-				return false
-			end
 		end
 	end
 	
+	return ReturnChannel
 end
 
 return function(RequiringObject: LuaSourceContainer)
+	PlayerLib.RequiringObject = RequiringObject
     return PlayerLib
-end
+end 

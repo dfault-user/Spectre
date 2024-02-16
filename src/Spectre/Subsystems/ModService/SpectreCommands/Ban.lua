@@ -8,10 +8,12 @@ for i, v in pairs(Spectre["Modules"]:GetChildren()) do
 end
 
 return {
-	NonAdmin = true,
+	RoleLevel = 3,
 	Description = "Kick a player",
 	HookIdent = "MODBAN",
-	Command = "ban",
+	Aliases = {
+		"ban",
+	},
 
 	Exec = function(plr, args)
 		print(args)

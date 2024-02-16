@@ -33,7 +33,6 @@ local Subsystems = script["Subsystems"]
 local Commands = script["Commands"]
 local Libraries = script["Libraries"]
 
-
 Spectre = {
 	Version = "beta-1",
 	Settings = require(script["Settings"]),
@@ -48,6 +47,7 @@ Spectre = {
 
 	ChatHooks = {}
 }
+
 
 function Include(ModuleScript: ModuleScript, Type: "Module" | "Subsystem" | "Library")
 	local RequiredModule = require(ModuleScript)
@@ -81,8 +81,14 @@ function Include(ModuleScript: ModuleScript, Type: "Module" | "Subsystem" | "Lib
 			end
 		end
 	elseif Type == "Library" then
-		Spectre.Libraries[ModuleScript] = RequiredModule
+		RequiredModule = require(ModuleScript)(script)
+		Spectre.Libraries[ModuleScript.Name] = RequiredModule
 	end
+end
+
+-- Load Spectre Libraries
+for _, Library in pairs(Libraries:GetChildren()) do
+	Include(Library, "Library")
 end
 
 -- Load Spectre Modules
@@ -90,6 +96,7 @@ for _, Module in pairs(Modules:GetChildren()) do
 	Include(Module, "Module")
 end
 
+Libraries = Spectre.Libraries
 Modules = Spectre.Modules
 Modules.Output("Spectre", `Registered {Modules.DictLength(Modules)} internal modules`)
 
@@ -99,7 +106,7 @@ for _, Command in pairs(Commands:GetChildren()) do
 end
 
 -- Load Spectre Subsystems
-for i, Subsystem in pairs(Subsystems:GetChildren()) do
+for _, Subsystem in pairs(Subsystems:GetChildren()) do
 	Include(Subsystem, "Subsystem")
 end
 
@@ -127,72 +134,88 @@ Spectre.Modules.Output(
 	`Ready with {Modules.DictLength(Modules)} modules, {Modules.DictLength(Commands)} commands, and {Modules.DictLength(Subsystems)} subsystems`
 )
 
-function Spectre:isAdmin(Player: Player) return Spectre.Libraries.PlayerLib:CheckAccess(Player) end
+function Spectre:hasAccess(Player: Player) 
+	return Libraries.PlayerLib:CheckAccess(Spectre.Settings.Roles, Player)
+end
 
 function Spectre:RegisterCommand(
 	Player: Player,
 	CommandModule: {
-		NonAdmin: boolean,
+		RoleLevel: number,
 		Description: string,
 		HookIdent: string,
-		Command: string,
+		Aliases: {},
 		Exec: any,
 	}
 )
-	local isAdmin = Spectre:isAdmin(Player)
-	if CommandModule.NonAdmin or isAdmin then
-		local chStr = (`{CommandModule.Command}{Spectre.Settings.Seperator}`):lower()
-
-		Spectre.ChatHooks[`{Player}`][`{CommandModule.HookIdent}`] = Player.Chatted:Connect(function(message)
-			if message:sub(1, #chStr) == chStr then
-				local arguments = message:sub(#chStr + 1):split(Spectre.Settings.Seperator)
-				local s, e = pcall(CommandModule.Exec, Player, arguments)
-				if not s and e then
+		Spectre.ChatHooks[`{Player.Name}`][`{CommandModule.HookIdent}`] = {} 
+		for _, Alias in ipairs(CommandModule.Aliases) do 
+		local CommandTrigger = (`{Alias}{Spectre.Settings.Separator}`):lower()
+			Player.Chatted:Connect(function(message)
+			if message:sub(1, #CommandTrigger):lower() == CommandTrigger then
+				local args = message:sub(#CommandTrigger + 1):split(Spectre.Settings.Seperator)
+				local CommandExecutionSuccess, CommandExecutionReturnChannel = pcall(CommandModule.Exec, Player, args)
+				if not CommandExecutionSuccess and CommandExecutionReturnChannel then
 					Spectre.Modules.Output(
-						`{CommandModule.Command}`,
-						`{Player} failed to execute command {CommandModule.Command}: {e}`
+						`{CommandModule.HookIdent}:{Alias}`,
+						`{Player} failed to execute command {CommandModule.HookIdent}:{Alias}: {CommandExecutionReturnChannel}`
 					)
-					return false
-				elseif s then
-					Spectre.Modules.Output(
-						`{CommandModule.Command}`,
-						`{Player} executed command {CommandModule.Command} with arguments {table.concat(arguments, "/")}`
-					)
-					return true
+				elseif CommandExecutionSuccess then
+				Spectre.Modules.Output(
+						`{CommandModule.HookIdent}:{Alias}`,
+						`{Player} executed command {CommandModule.HookIdent}:{Alias}" with arguments {table.concat(args, "/")}`
+				)
 				end
 			end
-		end)
-	end
+			end)
+		end
 
-	return 1
+	return true
 end
 
-local function PlayerAdded(plr: Player)
+local function PlayerAdded(Player: Player)
+	local PlayerAccessLevel = Spectre:hasAccess(Player)
+	local PlayerRole = PlayerAccessLevel.Role
+	local PlayerCommandPriority = PlayerAccessLevel.Priority
 	pcall(function()
-		if Spectre.ChatHooks[plr.Name] == nil then
-			Spectre.ChatHooks[plr.Name] = {}
+		if Spectre.ChatHooks[Player.Name] == nil then
+			Spectre.ChatHooks[Player.Name] = {}
 		else
-			table.clear(Spectre.ChatHooks[plr.Name])
+			table.clear(Spectre.ChatHooks[Player.Name])
 		end
 	end)
-
-	local registered = 0
+	
+	Player:SetAttribute("Spectre_AccessLevel",
+		PlayerRole
+	)
+	
 	for cmdR, cmd in pairs(Spectre.Commands) do
-		registered += Spectre:RegisterCommand(plr, cmd)
+		if PlayerAccessLevel.Priority >= cmd.RoleLevel then
+			Spectre:RegisterCommand(Player, cmd)
+		end
 	end
 
-	Spectre.Modules.Output("Init", `Registered {registered} commands for {plr}`)
+	Spectre.Modules.Output("Init", `Registered {Modules.DictLength(Spectre.ChatHooks[`{Player}`])} commands for {Player}`)
 end
 
 local function PlayerRemoving(plr: Player)
+	
+	for IndexTop, ChatHook in pairs(Spectre.ChatHooks[`{plr}`]) do
+		for Index, Connection in pairs(ChatHook) do
+			Connection:Disconnect()
+		end
+	end
+	
 	Spectre.Modules.Output(
 		"Detach",
 		`Deregistered {Modules.DictLength(Spectre.ChatHooks[`{plr}`])} commands from {plr}`
 	)
-	for i, v in pairs(Spectre.ChatHooks[`{plr}`]) do
-		v:Disconnect()
-	end
+	
 	Spectre.ChatHooks[`{plr}`] = nil
+end
+
+for i,v in pairs(Players:GetPlayers()) do 
+	PlayerAdded(v)
 end
 
 Players.PlayerAdded:Connect(PlayerAdded)

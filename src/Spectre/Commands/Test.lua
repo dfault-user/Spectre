@@ -5,12 +5,15 @@ local Modules = {}
 for i, v in pairs(Spectre["Modules"]:GetChildren()) do
 	Modules[v.Name] = require(v)
 end
--- this is a test
+
 return {
-	AccessLevel = "Player",
+	RoleLevel = 0,
 	Description = "Test command",
 	HookIdent = "TST",
-	Command = "test",
+	Aliases = {
+		"test",
+		"tst"	
+	},
 
 	Exec = function(plr, ...) print(...) end,
 }

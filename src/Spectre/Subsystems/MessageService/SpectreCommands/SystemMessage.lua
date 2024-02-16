@@ -8,10 +8,13 @@ for i, v in pairs(Spectre["Modules"]:GetChildren()) do
 end
 
 return {
-	NonAdmin = true,
+	RoleLevel = 3,
 	Description = "Announce a system message",
 	HookIdent = "ANCSM",
-	Command = "systemmessage",
+	Aliases = {
+		"announcement",
+		"sm"
+	},
 
 	Exec = function(plr, args)
 		Subsystem:PushMessage({

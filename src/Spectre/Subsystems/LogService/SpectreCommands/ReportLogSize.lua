@@ -8,10 +8,12 @@ for i, v in pairs(Spectre["Modules"]:GetChildren()) do
 end
 
 return {
-	NonAdmin = true,
+	RoleLevel = 4,
 	Description = "Report LogSize",
 	HookIdent = "RLS",
-	Command = "logsize",
+	Aliases = {
+		"logsize",
+	},
 
 	Exec = function(plr, ...)
 		local Size = Subsystem:GetSize()

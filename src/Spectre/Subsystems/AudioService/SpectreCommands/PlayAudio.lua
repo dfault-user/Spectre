@@ -8,10 +8,13 @@ for i, v in pairs(Spectre["Modules"]:GetChildren()) do
 end
 
 return {
-	NonAdmin = true,
+	RoleLevel = 2,
 	Description = "Play audio",
 	HookIdent = "AUDP",
-	Command = "aplay",
+	Aliases = {
+		"aplay",
+		"play"
+	},
 
 	Exec = function(plr, args)
 		local sObj = SpectreAudio:GetObject()

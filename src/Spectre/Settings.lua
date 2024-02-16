@@ -1,23 +1,38 @@
-export type AccessLevel = "Player" | "VIP" | "Moderator" | "Administrator" | "Owner"
 local Players = game:GetService("Players")
 Settings = {
-	Seperator = "/",
+	Separator = "/",
 
-	AccessLevels = {
+	Roles = {
 		Owner = {
-			`{Players:GetNameFromUserIdAsync(game.CreatorId)}.{game.CreatorId}`, -- "Control22:18875912"
+			Domain = {
+				"Control22:18875912",
+			},
+			
+			Priority = 4
 		},
 
 		Administrator = {
-
+			Domain = {
+				
+			},
+			
+			Priority = 3
 		},
 
 		Moderator = {
-
+			Domain = {
+				
+			},
+			
+			Priority = 2
 		},
 
 		VIP = {
+			Domain = {
+				
+			},
 			
+			Priority = 1
 		}
 	},
 
