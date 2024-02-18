@@ -4,7 +4,11 @@ Spectre services extend Spectre's functions and command set as one would see fit
 ## Example service
 ```lua
 -- This is an example Spectre subsystem.
--- 
+--
+
+-- Do some variable initialization if you have to
+-- This is an example Spectre subsystem.
+--
 
 -- Do some variable initialization if you have to
 local Players = game:GetService("Players")
@@ -13,27 +17,30 @@ local HttpService = game:GetService("HttpService")
 local Spectre = ServerScriptService["Spectre"]
 local Modules = {}
 
--- Pull all Spectre modules (Also optional, but it's probably a good idea )
-for i, v in pairs(Spectre["Modules"]:GetChildren()) do
-	Modules[v.Name] = require(v)
-end
-
--- Pull our own modules
-for i, v in pairs(script["SpectreModules"]:GetChildren()) do
-	Modules[`{script.Name}.{v.Name}`] = require(v)
-end
-
--- Subsystems requested for operation 
+-- Subsystems required for operation
 -- (This is optional if your service does not rely on any subsystems, but most services should subscribe to the LogService at least)
 local Subsystems = {
 	LogService = require(Spectre["Subsystems"]["LogService"]),
 }
 
--- Push to Spectre compartment in LogService
-Subsystems.LogService:Push("Spectre",{
-	Origin = "ExampleService",
-	Ready = true
-})
+-- Pull all Spectre modules (Also optional, but it's probably a good idea )
+for i, Module in pairs(Spectre["Modules"]:GetChildren()) do
+	Modules[`Spectre.{Module.Name}`] = require(Module)
+	
+	Subsystems.LogService:Push("ExampleService", {
+		LoadedModule = Module.Name
+	})
+end-- Push to compartment in LogService
+
+-- Pull our own modules
+for i, Module in pairs(script["SpectreModules"]:GetChildren()) do
+	Modules[Module.Name] = require(Module)
+	
+	Subsystems.LogService:Push("ExampleService", {
+		LoadedModule = Module.Name
+	})
+end
+-- Push to  compartment in LogService
 
 -- Initialize service table
 local ExampleService = {}
@@ -47,7 +54,7 @@ end
 -- This is used to push an not-API API to Spectre for inclusion in _G.Spectre later
 -- This is very much optional, all services will load without an API attached
 ExampleService.API = {
-	Test = ExampleService.Test
+	Test = ExampleService.Test,
 }
 
 return ExampleService -- All services are ModuleScripts
@@ -64,38 +71,55 @@ When you start and then stop a test game with Spectre fully installed, you shoul
 {
   "LogService": [
     {
-      "LS_TIMESTAMP": 1707858436109,
+      "LS_TIMESTAMP": 1708129384564,
       "Ready": true
     }
   ],
   "Spectre": [
     {
-      "LS_TIMESTAMP": 1707858436109,
+      "LS_TIMESTAMP": 1708129384564,
       "Ready": true,
       "Origin": "MessageService"
     },
     {
-      "LS_TIMESTAMP": 1707858436109,
+      "LS_TIMESTAMP": 1708129384564,
       "Ready": true,
       "Origin": "AudioService"
     },
     {
-      "LS_TIMESTAMP": 1707858436111,
-      "Ready": true,
-      "LoadedModules": {
-        "Spectre.RecursiveFreeze": null,
-        "Spectre.DictLength": null,
-        "Spectre.SafeFind": null,
-        "TestModule": null,
-        "Spectre.Output": null,
-        "Spectre.PlayerExistsInTable": null
-      },
-      "Origin": "ExampleService"
-    },
-    {
-      "LS_TIMESTAMP": 1707858436112,
+      "LS_TIMESTAMP": 1708129384565,
       "Ready": true,
       "Origin": "ModService"
+    }
+  ],
+  "ExampleService": [
+    {
+      "LoadedModule": "DeepFind",
+      "LS_TIMESTAMP": 1708129384564
+    },
+    {
+      "LoadedModule": "DictLength",
+      "LS_TIMESTAMP": 1708129384564
+    },
+    {
+      "LoadedModule": "Output",
+      "LS_TIMESTAMP": 1708129384564
+    },
+    {
+      "LoadedModule": "PartialMatch",
+      "LS_TIMESTAMP": 1708129384564
+    },
+    {
+      "LoadedModule": "RecursiveFreeze",
+      "LS_TIMESTAMP": 1708129384564
+    },
+    {
+      "LoadedModule": "SafeFind",
+      "LS_TIMESTAMP": 1708129384564
+    },
+    {
+      "LoadedModule": "TestModule",
+      "LS_TIMESTAMP": 1708129384564
     }
   ]
 }
