@@ -1,8 +1,13 @@
 Players = game:GetService("Players")
 
+-- Typedefs
 local Command = require(script["Types"].Command)
-type Command = Command.Class
+local Subsystem = require(script["Types"].Subsystem)
 
+type Command = Command.Class
+type Subsystem = Subsystem.Class
+
+-- Spectre
 Spectre = {
 	Version = "rewrite-1",
 	Settings = require(script["Settings"]),
@@ -17,6 +22,7 @@ Spectre = {
 	}
 
 }
+
 function Spectre:RegisterCommand(Player: Player, Command: Command)
 	for _,Alias in Command.Aliases do
 		local CommandTrigger = `{Spectre.Settings.Prefix}{Alias}`
