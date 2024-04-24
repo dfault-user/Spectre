@@ -12,17 +12,10 @@ Spectre = {
 	Version = "rewrite-1",
 	Settings = require(script["Settings"]),
 	
-	Commands = {
-		["test"] = Command.new({
-			"test"
-		}, "Tests Spectre Rewrite",
-		function(Player: Player, Arguments: {})
-			print(Player, Arguments)
-		end)
-	}
-
+	Commands = {},
 }
 
+-- Initialize commands
 function Spectre:RegisterCommand(Player: Player, Command: Command)
 	for _,Alias in Command.Aliases do
 		local CommandTrigger = `{Spectre.Settings.Prefix}{Alias}`
@@ -43,14 +36,14 @@ function Spectre:RegisterCommand(Player: Player, Command: Command)
 end
 
 function Spectre.PlayerAdded(Player: Player)
-	for _,Command in pairs(Spectre.Commands) do
+	for _, CurCmd in pairs(Spectre.Commands) do
 		Spectre:RegisterCommand(Player, Command)
 	end
 end
 
 Players.PlayerAdded:Connect(Spectre.PlayerAdded)
 for i,Player in pairs(Players:GetPlayers()) do
-	for _,Command in pairs(Spectre.Commands) do
+	for _, CurCmd in pairs(Spectre.Commands) do
 		Spectre:RegisterCommand(Player, Command)
 	end
 end
