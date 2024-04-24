@@ -16,7 +16,7 @@ export type Class = typeof(
 
 function Command.new(Aliases: {string}, 
 	Description: string, 
-	Callback: (
+	Execute: (
 		Player: Player, 
 		Arguments: {}
 	) -> ()
@@ -24,7 +24,7 @@ function Command.new(Aliases: {string},
 	return setmetatable({
 		Aliases = Aliases,
 		Description = Description,
-		Callback = Callback
+		Execute = Execute
 	}, Command)
 end
 
