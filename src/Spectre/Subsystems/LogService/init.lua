@@ -11,7 +11,6 @@ end
 Modules.Output(`{script.Name}`, "Waking up..")
 
 local LogService = {
-
 	Logs = {},
 }
 

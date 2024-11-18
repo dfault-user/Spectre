@@ -27,6 +27,10 @@ local LogService = Subsystems["LogService"]
 
 -- Funcdefs
 
+function ModService:BanAPIEnabled()
+	return Players.BanningEnabled
+end
+
 function ModService:Action(ModerationAction: ModerationAction)
 	local ActionType = ModerationAction.Type
 	local ActioningUser = ModerationAction.ActioningUser
@@ -40,8 +44,16 @@ function ModService:Action(ModerationAction: ModerationAction)
 	if ActionType == "Kick" then
 		OffendingUser:Kick(`[Spectre] Kicked for: {Reason}`)
 	elseif ActionType == "Ban" then
-		ModService.BanList:Add(OffendingUser)
-		OffendingUser:Kick(`[Spectre] Banned for: {Reason}`)
+		if ModService:BanAPIEnabled() then
+			Players:BanAsync({
+				UsersIds = {OffendingUser.UserId},
+				PrivateReason = `[Spectre] Banned for: {Reason}`,
+				DisplayReason = `[Spectre] Banned for: {Reason}`,
+			})
+		else
+			ModService.BanList:Add(OffendingUser)
+			OffendingUser:Kick(`[Spectre] Banned for: {Reason}`)
+		end
 	end
 
 	Players.PlayerRemoving:Once(function(Player: Player)
