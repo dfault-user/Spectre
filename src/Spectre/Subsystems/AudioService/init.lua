@@ -20,20 +20,34 @@ Subsystems.LogService:Push("Spectre", {
 })
 
 if not workspace:FindFirstChild("SpectreAudio") then
-	local sObj = Instance.new("Sound")
+	local sObj = Instance.new("Sound", workspace)
 	sObj.Name = "SpectreAudio"
-	sObj.Parent = workspace
-	SpectreAudio["Speaker"] = sObj
 
-	sObj:GetPropertyChangedSignal("SoundId"):Connect(function()
-		sObj:Stop()
-		wait(0.1)
+	SpectreAudio["Speaker"] = sObj
+	SpectreAudio["SpeakerIdChanged"] = sObj:GetPropertyChangedSignal("SoundId")
+
+	SpectreAudio["SpeakerIdChanged"]:Connect(function()
 		sObj:Play()
 	end)
 end
 
+function SpectreAudio:AssociateTrackChange(Source: Player | string)
+	local sObj = SpectreAudio.Speaker
+	local sTag = sObj:FindFirstChild("Source")
+
+	if 
+		type(Source) == "userdata" and Source:IsA("Player")
+	then
+		sTag.Value = `plr.{Source :: string}`
+	else
+		sTag.Value = `cus.{Source:: string}`
+	end
+
+	return sTag
+end
+
 function SpectreAudio:GetObject()
-	if SpectreAudio.Speaker ~= nil then
+	if SpectreAudio.Speaker then
 		return SpectreAudio.Speaker
 	else
 		return false

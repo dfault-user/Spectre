@@ -16,12 +16,13 @@ return {
 		"play"
 	},
 
-	Exec = function(plr, args)
+	Exec = function(plr: Player, args: {})
 		local sObj = SpectreAudio:GetObject()
-
-		if #args > 0 and tonumber(args[1]) ~= nil then
-			if sObj.SoundId ~= `rbxassetid://{args[1]}` then
-				sObj.SoundId = `rbxassetid://{args[1]}`
+		local sId = args[1]
+		if #args > 0 and tonumber(sId) ~= nil then
+			if sObj.SoundId ~= `rbxassetid://{sId}` then
+				SpectreAudio:AssociateTrackChange(plr)
+				sObj.SoundId = `rbxassetid://{sId}`
 			else
 				sObj:Play()
 			end
