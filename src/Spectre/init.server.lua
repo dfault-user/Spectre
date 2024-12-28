@@ -25,13 +25,8 @@
 --]]
 
 local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Debris = game:GetService("Debris")
 
-local Modules = script["Modules"]
-local Subsystems = script["Subsystems"]
-local Commands = script["Commands"]
-local Libraries = script["Libraries"]
+local Modules, Subsystems, Commands, Libraries = script.Modules, script.Subsystems, script.Commands, script.Libraries
 
 Spectre = {
 	Version = "beta-1",
@@ -56,8 +51,6 @@ function Include(ModuleScript: ModuleScript, Type: "Module" | "Subsystem" | "Lib
 		Spectre.Modules[ModuleScript.Name] = RequiredModule
 	elseif Type == "Subsystem" then
 		Spectre.Subsystems[ModuleScript.Name] = RequiredModule
-		local HasAddtCommands
-		local HasAddtModules
 	
 		local AddtCommands = Modules.SafeFind(ModuleScript, "SpectreCommands", "Folder")
 		local AddtModules = Modules.SafeFind(ModuleScript, "SpectreModules", "Folder")
@@ -114,9 +107,9 @@ Commands = Spectre.Commands
 Subsystems = Spectre.Subsystems
 Modules.Output(
 	"Init",
-	`Registered {Modules.DictLength(Modules)} modules and {Modules.DictLength(Subsystems)} subsystems`
+	`Registered {Modules.DictLength(Modules)} ({table.concat(Modules, ", ")}) modules and {Modules.DictLength(Subsystems)} ({table.concat(Subsystems, ", ")}) subsystems`
 )
--- Initialize Spectre as a global thing
+-- Expose Spectre to global Lua namespace
 _G.Spectre = {
 	Modules = Modules,
 	Subsystems = {},
@@ -148,13 +141,16 @@ function Spectre:RegisterCommand(
 		Exec: any,
 	}
 )
+
 		Spectre.ChatHooks[`{Player.Name}`][`{CommandModule.HookIdent}`] = {} 
 		for _, Alias in ipairs(CommandModule.Aliases) do 
 		local CommandTrigger = (`{Alias}{Spectre.Settings.Separator}`):lower()
 			Player.Chatted:Connect(function(message)
 			if message:sub(1, #CommandTrigger):lower() == CommandTrigger then
 				local args = message:sub(#CommandTrigger + 1):split(Spectre.Settings.Seperator)
-				local CommandExecutionSuccess, CommandExecutionReturnChannel = pcall(CommandModule.Exec, Player, args)
+				local CommandExecution = pcall(CommandModule.Exec, Player, args)
+				local CommandExecutionSuccess, CommandExecutionReturnChannel = CommandExecution[1], CommandExecution[2]
+
 				if not CommandExecutionSuccess and CommandExecutionReturnChannel then
 					Spectre.Modules.Output(
 						`{CommandModule.HookIdent}:{Alias}`,
@@ -176,7 +172,8 @@ end
 local function PlayerAdded(Player: Player)
 	local PlayerAccessLevel = Spectre:hasAccess(Player)
 	local PlayerRole = PlayerAccessLevel.Role
-	local PlayerCommandPriority = PlayerAccessLevel.Priority
+	local PlayerCommandGrants = PlayerAccessLevel.Grants
+
 	pcall(function()
 		if Spectre.ChatHooks[Player.Name] == nil then
 			Spectre.ChatHooks[Player.Name] = {}
@@ -190,7 +187,7 @@ local function PlayerAdded(Player: Player)
 	)
 	
 	for cmdR, cmd in pairs(Spectre.Commands) do
-		if PlayerAccessLevel.Priority >= cmd.RoleLevel then
+		if PlayerCommandGrants >= cmd.RoleLevel then
 			Spectre:RegisterCommand(Player, cmd)
 		end
 	end

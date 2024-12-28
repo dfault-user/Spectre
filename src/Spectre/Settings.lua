@@ -1,38 +1,37 @@
-local Players = game:GetService("Players")
 Settings = {
 	Separator = "/",
 
 	Roles = {
 		Owner = {
-			Domain = {
+			Grants = {
 				"Control22:18875912",
 			},
 			
-			Priority = 4
+			CommandLevel = 4
 		},
 
 		Administrator = {
-			Domain = {
+			Grants = {
 				
 			},
 			
-			Priority = 3
+			CommandLevel = 3
 		},
 
 		Moderator = {
-			Domain = {
+			Grants = {
 				
 			},
 			
-			Priority = 2
+			CommandLevel = 2
 		},
 
 		VIP = {
-			Domain = {
+			Grants = {
 				
 			},
 			
-			Priority = 1
+			CommandLevel = 1
 		}
 	},
 

@@ -15,14 +15,14 @@ function PlayerLib:CheckAccess(
 )
 	local ReturnChannel = {
 		Role = "Player",
-		Priority = 0
+		CommandLevel = 0
 	}
 	
 	for CurRole,CurArray in pairs(CurrentAccessTable) do
-		if table.find(CurArray.Domain, `{Player.Name}:{Player.UserId}`) then
+		if table.find(CurArray.Grants, `{Player.Name}:{Player.UserId}`) then
 			ReturnChannel = {
 				Role = CurRole,
-				Priority = CurArray.Priority
+				CommandLevel = CurArray.CommandLevel
 			}
 		end
 	end
