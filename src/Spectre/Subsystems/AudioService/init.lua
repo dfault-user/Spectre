@@ -3,7 +3,8 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local MarketplaceService = game:GetService("MarketplaceService")
 local Spectre = ServerScriptService["Spectre"]
 local MessageService = require(Spectre["Subsystems"]["MessageService"])
-local Modules = {}
+local Modules = {
+}
 local Subsystems = {
 	LogService = require(Spectre["Subsystems"]["LogService"]),
 }
@@ -33,7 +34,7 @@ end
 
 function SpectreAudio:AssociateTrackChange(Source: Player | string)
 	local sObj = SpectreAudio.Speaker
-	local sTag = sObj:FindFirstChild("Source")
+	local sTag = Modules.SafeFind(sObj, "Source")
 
 	if 
 		type(Source) == "userdata" and Source:IsA("Player")
